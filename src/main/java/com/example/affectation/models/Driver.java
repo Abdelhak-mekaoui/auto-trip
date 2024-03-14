@@ -1,4 +1,4 @@
-package com.example.affectation.entities;
+package com.example.affectation.models;
 
 
 import jakarta.persistence.*;
@@ -27,13 +27,23 @@ public class Driver {
 
     // Additional fields
     private String contactNumber; // Coordonnées personnelles
-    private String skills;
-    private String drivingExperience;
-    private String trainings;
-    private String certifications;
 
-    @OneToOne
-    DriverLicense license;
+    // Enum for skills
+    @Enumerated(EnumType.STRING)
+    private DriverSkills skills;
+
+    private String drivingExperience;
+    private String licenseNumber;
+
+    // Relationships
+    @OneToMany(mappedBy = "driver")
+    private List<DriverLicense> licenses;
+
+    @OneToMany(mappedBy = "driver")
+    private List<Training> trainings;
+
+    @OneToMany(mappedBy = "driver")
+    private List<Certification> certifications;
 
     @OneToMany(mappedBy = "assignedDriver")
     private List<PlannedTrip> plannedTrips;
