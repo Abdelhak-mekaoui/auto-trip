@@ -13,7 +13,5 @@ import java.util.Optional;
 @Repository
 public interface DriverLicenseRepository extends JpaRepository<DriverLicense, Integer> {
 
-    Optional<DriverLicense> findByDriver(Driver driver);
-    List<DriverLicense> findByLicenseIssueDateBefore(LocalDate issueDate);
 
 }

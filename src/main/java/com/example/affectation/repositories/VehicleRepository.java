@@ -2,6 +2,7 @@ package com.example.affectation.repositories;
 
 
 
+import com.example.affectation.models.Driver;
 import com.example.affectation.models.Vehicle;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -15,19 +16,20 @@ import java.util.List;
 @Repository
 public interface VehicleRepository extends JpaRepository<Vehicle, Integer> {
 
-    @Query("SELECT DISTINCT v FROM Vehicle v JOIN FETCH v.plannedTrips pt  " +
-            "WHERE pt.expectedArrivalDate < :currentDate " +
-            "AND pt.expectedArrivalTime < :currentTime " +
-            "AND v.requiredLicenseType = :requiredLicenseType " +
-            "AND v.license.carteGriseValidity <= :validUntil " +
-            "AND v.license.insuranceValidity <= :validUntil " +
-            "AND v.license.technicalVisitValidity <= :validUntil"
+    @Query("SELECT v FROM Vehicle v " +
+            "LEFT JOIN v.plannedTrips pt " +
+            "WHERE ((pt.departureDate > :arrivalDate OR pt.expectedArrivalDate < :departureDate) " +
+            "OR (pt.departureDate = :arrivalDate AND pt.expectedArrivalDate = :arrivalDate " +
+            "AND (pt.departureTime > :arrivalTime OR pt.expectedArrivalTime < :departureTime)) " +
+            "OR (pt.departureDate = :departureDate AND pt.expectedArrivalDate = :departureDate " +
+            "AND (pt.departureTime > :arrivalTime OR pt.expectedArrivalTime < :arrivalTime)) " +
+            "OR (pt.departureDate < :departureDate AND pt.expectedArrivalDate > :arrivalDate)) "
     )
-    List<Vehicle> findVehicles(
-            @Param("currentDate") LocalDate currentDate,
-            @Param("currentTime") LocalTime currentTime,
-            @Param("requiredLicenseType") String requiredLicenseType,
-            @Param("validUntil") LocalDate validUntil
+    List<Vehicle> getCorrespondingVehicles(
+            @Param("departureDate") LocalDate departureDate,
+            @Param("departureTime") LocalTime departureTime,
+            @Param("arrivalDate") LocalDate arrivalDate,
+            @Param("arrivalTime") LocalTime arrivalTime
     );
 
 }

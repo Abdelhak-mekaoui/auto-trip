@@ -65,11 +65,18 @@ public class DisponibilityServiceImpl implements DisponibilityService {
     }
 
     @Override
-    public List<Vehicle> getCorrespondingVehicles(LocalDate deparatureDate,
-                                                  LocalTime deparatureTime,
-                                                  LocalDate arrivaltDate,
-                                                  LocalTime arrivalTime) {
-        return null;
+    public List<Vehicle> getCorrespondingVehicles(
+            LocalDate departureDate,
+            LocalTime departureTime,
+            LocalDate arrivalDate,
+            LocalTime arrivalTime
+    ) {
+        if (departureDate.isAfter(arrivalDate) ||
+                (departureDate.isEqual(arrivalDate) &&
+                        departureTime.isAfter(arrivalTime))) {
+            throw new IllegalArgumentException("Departure must be before arrival");
+        }
+        return vehicleRepository.getCorrespondingVehicles(departureDate, departureTime, arrivalDate, arrivalTime);
     }
 
 }

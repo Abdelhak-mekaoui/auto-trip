@@ -15,10 +15,11 @@ public interface DisponibilityService {
                                                  LocalDate arrivaltDate,
                                                  LocalTime arrivalTime
                                                  );
-    public List<Vehicle> getCorrespondingVehicles( LocalDate deparatureDate,
-                                                   LocalTime deparatureTime,
-                                                   LocalDate arrivaltDate,
-                                                   LocalTime arrivalTime
+    public List<Vehicle> getCorrespondingVehicles(
+            LocalDate departureDate,
+            LocalTime departureTime,
+            LocalDate arrivalDate,
+            LocalTime arrivalTime
     );
 
     public List<Driver> filterDriversByLicenseType(List<Driver> drivers,
